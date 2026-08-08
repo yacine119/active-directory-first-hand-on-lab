@@ -1,0 +1,77 @@
+<svg viewBox="0 0 900 560" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#5b6b7c"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="900" height="560" fill="#f7f8fa"/>
+
+  <!-- Title -->
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#1f2937">zohdy.local — Active Directory Lab Topology</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#6b7280">192.168.1.0/24</text>
+
+  <!-- Router/Network cloud -->
+  <ellipse cx="450" cy="110" rx="120" ry="34" fill="#e5edff" stroke="#93a9d6" stroke-width="1.5"/>
+  <text x="450" y="106" text-anchor="middle" font-size="13" font-weight="600" fill="#374151">Network</text>
+  <text x="450" y="122" text-anchor="middle" font-size="11" fill="#6b7280">192.168.1.0/24 (VMware NAT/Host-only)</text>
+
+  <!-- DC box -->
+  <rect x="330" y="190" width="240" height="120" rx="10" fill="#ffffff" stroke="#3b5bdb" stroke-width="2"/>
+  <text x="450" y="216" text-anchor="middle" font-size="15" font-weight="700" fill="#1e3a8a">DC — Domain Controller</text>
+  <text x="450" y="238" text-anchor="middle" font-size="12" fill="#374151">Windows Server 2025 Standard</text>
+  <text x="450" y="256" text-anchor="middle" font-size="12" fill="#374151">IP: 192.168.1.2 (static)</text>
+  <text x="450" y="274" text-anchor="middle" font-size="12" fill="#374151">AD DS · DNS · DHCP · GPMC</text>
+  <text x="450" y="292" text-anchor="middle" font-size="12" font-weight="600" fill="#3b5bdb">Domain: zohdy.local</text>
+
+  <line x1="450" y1="144" x2="450" y2="190" stroke="#5b6b7c" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Client box -->
+  <rect x="360" y="440" width="180" height="90" rx="10" fill="#ffffff" stroke="#0f9960" stroke-width="2"/>
+  <text x="450" y="466" text-anchor="middle" font-size="14" font-weight="700" fill="#0b6b45">PC01 — Client</text>
+  <text x="450" y="486" text-anchor="middle" font-size="12" fill="#374151">Windows 10/11</text>
+  <text x="450" y="504" text-anchor="middle" font-size="12" fill="#374151">IP: 192.168.1.40 (DHCP reservation)</text>
+
+  <line x1="450" y1="310" x2="450" y2="440" stroke="#5b6b7c" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="470" y="380" font-size="11" fill="#6b7280">domain-joined</text>
+
+  <!-- OU boxes -->
+  <g>
+    <rect x="40" y="200" width="150" height="150" rx="10" fill="#fff8e6" stroke="#c98a12" stroke-width="1.5"/>
+    <text x="115" y="224" text-anchor="middle" font-size="14" font-weight="700" fill="#7a5200">OU: HR</text>
+    <text x="115" y="248" text-anchor="middle" font-size="11" fill="#4b3b00">Mohamed Zohdy</text>
+    <text x="115" y="266" text-anchor="middle" font-size="11" fill="#4b3b00">Salma Mohamed</text>
+    <text x="115" y="284" text-anchor="middle" font-size="11" font-weight="600" fill="#7a5200">HR-group</text>
+    <text x="115" y="308" text-anchor="middle" font-size="10" fill="#6b7280">GPOs: Control Panel,</text>
+    <text x="115" y="322" text-anchor="middle" font-size="10" fill="#6b7280">CMD, Storage, URL</text>
+  </g>
+
+  <g>
+    <rect x="40" y="380" width="150" height="130" rx="10" fill="#eefaf0" stroke="#1c9c4b" stroke-width="1.5"/>
+    <text x="115" y="404" text-anchor="middle" font-size="14" font-weight="700" fill="#146b34">OU: Sales</text>
+    <text x="115" y="428" text-anchor="middle" font-size="11" fill="#12522a">Alaa Kamal</text>
+    <text x="115" y="446" text-anchor="middle" font-size="11" font-weight="600" fill="#146b34">sales-group</text>
+    <text x="115" y="470" text-anchor="middle" font-size="10" fill="#6b7280">GPO: Control Panel</text>
+  </g>
+
+  <g>
+    <rect x="710" y="200" width="150" height="150" rx="10" fill="#eef2ff" stroke="#4c51bf" stroke-width="1.5"/>
+    <text x="785" y="224" text-anchor="middle" font-size="14" font-weight="700" fill="#2f3480">OU: IT</text>
+    <text x="785" y="248" text-anchor="middle" font-size="11" fill="#2a2e6b">Ahmed Nabil</text>
+    <text x="785" y="266" text-anchor="middle" font-size="11" font-weight="600" fill="#2f3480">IT-group</text>
+    <text x="785" y="290" text-anchor="middle" font-size="10" fill="#6b7280">Excluded from</text>
+    <text x="785" y="304" text-anchor="middle" font-size="10" fill="#6b7280">RemoveTaskManager GPO</text>
+    <text x="785" y="322" text-anchor="middle" font-size="10" fill="#6b7280">Added as Local Admin</text>
+  </g>
+
+  <line x1="190" y1="270" x2="330" y2="240" stroke="#5b6b7c" stroke-width="1.2" stroke-dasharray="4 3"/>
+  <line x1="190" y1="440" x2="330" y2="290" stroke="#5b6b7c" stroke-width="1.2" stroke-dasharray="4 3"/>
+  <line x1="710" y1="270" x2="570" y2="240" stroke="#5b6b7c" stroke-width="1.2" stroke-dasharray="4 3"/>
+
+  <!-- DHCP note -->
+  <rect x="620" y="400" width="240" height="90" rx="8" fill="#fef3f2" stroke="#d64545" stroke-width="1.5"/>
+  <text x="740" y="422" text-anchor="middle" font-size="12" font-weight="700" fill="#a02020">DHCP Scope</text>
+  <text x="740" y="440" text-anchor="middle" font-size="11" fill="#5c1a1a">Pool: .40 – .230</text>
+  <text x="740" y="456" text-anchor="middle" font-size="11" fill="#5c1a1a">Excluded: .80 – .85</text>
+  <text x="740" y="472" text-anchor="middle" font-size="11" fill="#5c1a1a">PC01 reserved: .40</text>
+</svg>

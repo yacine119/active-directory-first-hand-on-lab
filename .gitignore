@@ -1,0 +1,15 @@
+# OS junk
+.DS_Store
+Thumbs.db
+
+# VM artifacts if ever copied into the repo by accident
+*.vmdk
+*.vmem
+*.vmsn
+*.vmss
+*.nvram
+*.log
+
+# Anything explicitly marked local/sensitive
+*local-only*
+*secrets*
