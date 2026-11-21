@@ -50,9 +50,9 @@ foreach ($u in $users) {
 
 # --- 3. Department Groups -------------------------------------------------
 $groups = @(
-    @{ Name = "HR-group";    OU = "HR";    Members = @("mzohdy", "smohamed") }
-    @{ Name = "sales-group"; OU = "Sales"; Members = @("akamal") }
-    @{ Name = "IT-group";    OU = "IT";    Members = @("anabil") }
+    @{ Name = "HR-group";    OU = "HR";    Members = @("mohamed.zohdy", "salma.mohamed") }
+    @{ Name = "sales-group"; OU = "Sales"; Members = @("alaa.kamal") }
+    @{ Name = "IT-group";    OU = "IT";    Members = @("ahmed.nabil") }
 )
 
 foreach ($g in $groups) {
