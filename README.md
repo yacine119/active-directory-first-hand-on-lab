@@ -14,7 +14,7 @@ sysadmin work.
 
 ## Architecture
 
-![Network Diagram](docs/network-diagram.svg)
+![Network Diagram](documents/network-diagram.svg)
 
 | Role | Hostname | IP | OS |
 |---|---|---|---|
@@ -48,7 +48,7 @@ sysadmin work.
 
 ## Build order
 
-Details for every step are in [`docs/setup-notes.md`](docs/setup-notes.md).
+Details for every step are in [`docs/setup-notes.md`](documents/setup-notes.md).
 
 1. DC: install Server 2025, static IP, rename to `DC`, install AD DS, promote to new forest `zohdy.local`
 2. Create OUs, users and security groups
@@ -149,43 +149,43 @@ Numbered in build order (all files are in [`/screenshots`](screenshots)).
 
 **1. Domain controller — Server Manager** (`DC`, `zohdy.local`, `192.168.1.2`, Server 2025 Standard Evaluation)
 
-![Server Manager overview](screenshots/01-server-manager-overview.png)
+![Server Manager overview](screenshots/Picture2.png)
 
 **2. OU `HR`** — Mohamed zohdy, Salma Mohamed, `HR-group`
 
-![ADUC HR OU](screenshots/02-aduc-hr-ou.png)
+![ADUC HR OU](screenshots/Picture3.png)
 
 **3. OU `IT`** — Ahmed nabil, `IT-group`
 
-![ADUC IT OU](screenshots/03-aduc-it-ou.png)
+![ADUC IT OU](screenshots/Picture4.png)
 
 **4. OU `Sales`** — Alaa kamal, `sales-group`
 
-![ADUC Sales OU](screenshots/04-aduc-sales-ou.png)
+![ADUC Sales OU](screenshots/Picture5.png)
 
 **5. GPO `disable-ControlPanel`** — linked to HR and Sales, "Prohibit access to Control Panel and PC settings" enabled
 
-![GPMC disable-ControlPanel](screenshots/05-gpmc-disable-controlpanel.png)
+![GPMC disable-ControlPanel](screenshots/Picture6.png)
 
 **6. GPO `DisableExternalStorage`** — linked to HR, "All Removable Storage classes: Deny all access" (User Configuration)
 
-![GPMC DisableExternalStorage](screenshots/06-gpmc-external-storage.png)
+![GPMC DisableExternalStorage](screenshots/Picture7.png)
 
 **7. GPO `RemoveTaskManager`** — linked at the domain root, "Remove Task Manager" enabled
 
-![GPMC RemoveTaskManager](screenshots/07-gpmc-task-manager.png)
+![GPMC RemoveTaskManager](screenshots/Picture8.png)
 
 **8. DHCP address pool** — range `.40 – .230`, exclusion `.80 – .85`
 
-![DHCP address pool](screenshots/08-dhcp-address-pool.png)
+![DHCP address pool](screenshots/Picture9.png)
 
 **9. DHCP reservation** — `192.168.1.40` reserved in `zohdy's-scope`
 
-![DHCP reservation](screenshots/09-dhcp-reservation-pc01.png)
+![DHCP reservation](screenshots/Picture10.png)
 
 **10. `PasswordPolicy` GPO** — password and lockout settings
 
-![Password policy settings](screenshots/10-password-policy-settings.png)
+![Password policy settings](Picture11.png)
 
 ## Technologies
 
