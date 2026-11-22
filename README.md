@@ -185,7 +185,7 @@ Numbered in build order (all files are in [`/screenshots`](screenshots)).
 
 **10. `PasswordPolicy` GPO** — password and lockout settings
 
-![Password policy settings](Picture11.png)
+![Password policy settings](screenshots/Picture11.png)
 
 ## Technologies
 
