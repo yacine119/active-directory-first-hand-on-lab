@@ -19,7 +19,7 @@ sysadmin work.
 | Role | Hostname | IP | OS |
 |---|---|---|---|
 | Domain Controller (AD DS, DNS, DHCP) | DC | 192.168.1.2 (static) | Windows Server 2025 Standard (Evaluation) |
-| Domain-joined client | PC01 | 192.168.1.40 (reserved via DHCP) | Windows 10/11 |
+| Domain-joined client | PC01 | 192.168.1.40 (reserved via DHCP) | Windows 11 |
 
 **Domain:** `zohdy.local`
 
@@ -30,7 +30,7 @@ sysadmin work.
 | Host | 16 GB RAM (8 GB minimum), 4+ cores, ~80 GB free disk |
 | Hypervisor | VMware Workstation |
 | VMs | DC: 2 vCPU / 4 GB RAM / 60 GB disk. Client: 2 vCPU / 4 GB RAM / 60 GB disk |
-| ISOs | Windows Server 2025 Evaluation and a Windows 10/11 ISO (Microsoft Evaluation Center) |
+| ISOs | Windows Server 2025 Evaluation and a Windows 11 ISO (Microsoft Evaluation Center) |
 | Network | One isolated virtual network, `192.168.1.0/24`. If VMware's built-in DHCP is enabled on it, turn it off so it doesn't compete with the DC's DHCP server. |
 
 ## Repository layout
@@ -38,10 +38,12 @@ sysadmin work.
 ```
 .
 ├── README.md
+├── LICENSE
+├── .gitignore
 ├── docs/
 │   ├── network-diagram.svg
-│   └── setup-notes.md      # step-by-step notes + troubleshooting log
-└── screenshots/            # PNG files, one per lab stage
+│   └── setup-notes.md          # step-by-step notes + troubleshooting log
+└── screenshots/                # PNG files, numbered in build order (01 – 10)
 ```
 
 ## Build order
@@ -79,12 +81,12 @@ zohdy.local
 | `disable-ControlPanel` | HR, Sales OUs | Hides/disables Control Panel |
 | `DisableCMD` | HR OU | Disables `cmd.exe` |
 | `DisableExternalStorage` | HR OU (security-filtered to exclude HR manager) | Blocks USB/removable storage for all HR users except Mohamed Zohdy |
-| `RemoveTaskManager` | Domain-wide (security-filtered to exclude IT-group) | Removes Task Manager for every domain user except IT |
-| `RemoveProperteies` | HR OU | Removes "Properties" from the This PC right-click context menu |
-| `PasswordPolicy` / Default Domain Policy | Domain root | Max age 90 days, min length 6, complexity on, history 2, lockout after 5 attempts for 60 minutes |
+| `RemoveTaskManager` | Domain root, link enforced (exception for IT-group) | Removes Task Manager for domain users except IT |
+| `RemoveProperteies` | Domain root | Removes "Properties" from the This PC right-click context menu |
+| `PasswordPolicy` | Domain root | History 2, max age 90 days, min age 30 days, min length 6, complexity on; lockout after 5 attempts for 60 minutes, counter reset after 10 minutes |
 | `HR-url` | HR OU | Deploys the `http://hrapp.zohdy.local` shortcut to HR desktops (GPP) |
-| `itadmin` | Domain-wide | Creates a local admin account (`itadmin`) on domain-joined computers via GPP |
-| Local Administrators (via GPO) | Domain-wide | Adds `IT-group` to the local Administrators group via GPP |
+| `itadmin` | Domain root | Creates a local admin account (`itadmin`) on domain-joined computers via GPP |
+| `IT-group-Admins` | Domain root | Adds `IT-group` to the local Administrators group via GPP |
 
 ### How "everyone except X" works
 
@@ -97,14 +99,14 @@ In the GPMC, filtering has two parts that both matter:
 - Add the group that should get the policy under **Scope → Security Filtering**.
 - Add the exception as an explicit **Deny → Apply group policy** entry under **Delegation → Advanced**. A missing Allow isn't enough when Authenticated Users still has Apply.
 
-Keep **Read** for Authenticated Users on filtered GPOs, since removing it entirely can stop the GPO from applying to anyone (MS16-072).
+Best practice is to keep **Read** for Authenticated Users on filtered GPOs, since removing it entirely can stop the GPO from applying to anyone (MS16-072). See the limitations section for what my screenshots show.
 
 ## DHCP Configuration
 
 - Scope: `192.168.1.0/24` ("zohdy's-scope")
 - Address pool: `192.168.1.40` – `192.168.1.230`
 - Exclusion range: `192.168.1.80` – `192.168.1.85`
-- `PC01` receives `192.168.1.40` via a **DHCP reservation** tied to its MAC address, so it always gets the same address without a static IP on the client and without the pool handing that address to someone else.
+- `PC01` receives `192.168.1.40` via a **DHCP reservation** (named `ip manager` in the console) tied to its MAC address, so it always gets the same address without a static IP on the client and without the pool handing that address to someone else.
 - The DHCP server is authorized in AD (an unauthorized server won't lease addresses on a domain network).
 
 ## Testing
@@ -133,6 +135,8 @@ Each restriction was tested on PC01 as an affected user and as an excluded one, 
 
 ## Known limitations / what I'd do differently
 
+- **Security filtering and delegation.** In the GPMC Settings reports (screenshots 05–07), *Security Filtering* reads "None" and *Delegation* lists a single principal, meaning the default entries (Authenticated Users, Domain Admins, SYSTEM) were removed from those GPOs. The recommended setup keeps Read for Authenticated Users and grants Apply to the target group; a cleaner version of this lab would show that in the Scope and Delegation tabs.
+- **PasswordPolicy vs. Default Domain Policy.** Both exist at the domain root. Whichever has the higher link order wins for conflicting account-policy settings, so one policy should own these settings.
 - **Preset local-admin password via GPP.** The `itadmin` account was created with Group Policy Preferences. GPP stores that password in SYSVOL with a publicly known key (MS14-025), so any domain user could recover it, and current Windows versions disable the password field. Fine for an isolated lab, not for production. The proper fix is **Windows LAPS** (on the roadmap).
 - **Password policy.** Min length 6 and history 2 come from the exam scenario. Real environments should use 12+ characters.
 - **Computers container.** PC01 sits in the default `Computers` container. A dedicated `Workstations` OU would allow computer-side GPOs (LAPS, local admin groups) to be scoped properly.
@@ -141,11 +145,51 @@ Each restriction was tested on PC01 as an affected user and as an excluded one, 
 
 ## Screenshots
 
-See [`/screenshots`](screenshots) for the walkthrough: Server Manager overview, AD Users and Computers per OU, GPMC scope and filtering, DHCP scope and reservation, password policy, and PC01 joined to the domain.
+Numbered in build order (all files are in [`/screenshots`](screenshots)).
+
+**1. Domain controller — Server Manager** (`DC`, `zohdy.local`, `192.168.1.2`, Server 2025 Standard Evaluation)
+
+![Server Manager overview](screenshots/01-server-manager-overview.png)
+
+**2. OU `HR`** — Mohamed zohdy, Salma Mohamed, `HR-group`
+
+![ADUC HR OU](screenshots/02-aduc-hr-ou.png)
+
+**3. OU `IT`** — Ahmed nabil, `IT-group`
+
+![ADUC IT OU](screenshots/03-aduc-it-ou.png)
+
+**4. OU `Sales`** — Alaa kamal, `sales-group`
+
+![ADUC Sales OU](screenshots/04-aduc-sales-ou.png)
+
+**5. GPO `disable-ControlPanel`** — linked to HR and Sales, "Prohibit access to Control Panel and PC settings" enabled
+
+![GPMC disable-ControlPanel](screenshots/05-gpmc-disable-controlpanel.png)
+
+**6. GPO `DisableExternalStorage`** — linked to HR, "All Removable Storage classes: Deny all access" (User Configuration)
+
+![GPMC DisableExternalStorage](screenshots/06-gpmc-external-storage.png)
+
+**7. GPO `RemoveTaskManager`** — linked at the domain root, "Remove Task Manager" enabled
+
+![GPMC RemoveTaskManager](screenshots/07-gpmc-task-manager.png)
+
+**8. DHCP address pool** — range `.40 – .230`, exclusion `.80 – .85`
+
+![DHCP address pool](screenshots/08-dhcp-address-pool.png)
+
+**9. DHCP reservation** — `192.168.1.40` reserved in `zohdy's-scope`
+
+![DHCP reservation](screenshots/09-dhcp-reservation-pc01.png)
+
+**10. `PasswordPolicy` GPO** — password and lockout settings
+
+![Password policy settings](screenshots/10-password-policy-settings.png)
 
 ## Technologies
 
-Windows Server 2025 (Standard, Evaluation) · AD DS · DNS · DHCP · Group Policy (GPMC + GPP) · Windows 10/11 client · VMware Workstation
+Windows Server 2025 (Standard, Evaluation) · AD DS · DNS · DHCP · Group Policy (GPMC + GPP) · Windows 11 client · VMware Workstation
 
 ## Roadmap — Bigger Version (planned)
 
